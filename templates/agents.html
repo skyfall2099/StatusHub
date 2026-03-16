@@ -5,14 +5,16 @@
         <table>
             <tr>
                 <th>脚本名称</th>
+                <th>部署数量</th>
                 <th>操作</th>
             </tr>
             {% for agent in agents %}
             <tr>
-                <td>{{ agent }}</td>
+                <td>{{ agent.name }}</td>
+                <td>{{ agent.deployment_count }}</td>
                 <td>
-                    <a href="#" class="btn">查看</a>
-                    <a href="#" class="btn btn-danger">删除</a>
+                    <a href="/agent/{{ agent.name }}" class="btn">查看</a>
+                    <a href="/agent/deployments/{{ agent.name }}" class="btn">实例({{ agent.deployment_count }})</a>
                 </td>
             </tr>
             {% endfor %}

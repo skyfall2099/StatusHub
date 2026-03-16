@@ -1,0 +1,8 @@
+{% extends 'base.html' %}
+{% block content %}
+    <div class="content">
+        <h2>查看监控脚本 - {{ agent_name }}</h2>
+        <pre style="background-color: #f5f5f5; padding: 10px; border-radius: 5px; overflow-x: auto;">{{ content }}</pre>
+        <a href="/agents" class="btn">返回</a>
+    </div>
+{% endblock %}

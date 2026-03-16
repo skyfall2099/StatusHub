@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+{% block content %}
+    <div class="content">
+        <h2>部署情况 - {{ agent_name }}</h2>
+        <table>
+            <tr>
+                <th>部署时间</th>
+                <th>目标服务器</th>
+                <th>调度配置</th>
+            </tr>
+            {% if deployments %}
+            {% for deployment in deployments %}
+            <tr>
+                <td>{{ deployment.timestamp }}</td>
+                <td>{{ deployment.server }}</td>
+                <td>{{ deployment.cron }}</td>
+            </tr>
+            {% endfor %}
+            {% else %}
+            <tr>
+                <td colspan="3">暂无部署记录</td>
+            </tr>
+            {% endif %}
+        </table>
+        <a href="/agents" class="btn">返回</a>
+    </div>
+{% endblock %}

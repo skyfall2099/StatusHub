@@ -86,8 +86,45 @@ def agents():
     agents_list = []
     for file in os.listdir(AGENTS_SCRIPTS_DIR):
         if file.endswith('.py'):
-            agents_list.append(file)
+            # 读取文件内容
+            file_path = os.path.join(AGENTS_SCRIPTS_DIR, file)
+            try:
+                with open(file_path, 'r', encoding='utf-8') as f:
+                    content = f.read()
+            except:
+                content = ''
+            
+            # 统计部署情况（暂时返回0，需要实现部署记录功能）
+            deployment_count = 0
+            
+            agents_list.append({
+                'name': file,
+                'content': content,
+                'deployment_count': deployment_count
+            })
     return render_template('agents.html', agents=agents_list)
+
+# 查看Agent详情
+@app.route('/agent/<agent_name>')
+def agent_detail(agent_name):
+    file_path = os.path.join(AGENTS_SCRIPTS_DIR, agent_name)
+    if not os.path.exists(file_path):
+        return redirect(url_for('agents'))
+    
+    try:
+        with open(file_path, 'r', encoding='utf-8') as f:
+            content = f.read()
+    except:
+        content = ''
+    
+    return render_template('agent_detail.html', agent_name=agent_name, content=content)
+
+# 查看Agent部署情况
+@app.route('/agent/deployments/<agent_name>')
+def agent_deployments(agent_name):
+    # 暂时返回空部署记录，需要实现部署记录功能
+    deployments = []
+    return render_template('agent_deployments.html', agent_name=agent_name, deployments=deployments)
 
 # 部署管理
 @app.route('/deploy')
