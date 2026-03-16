@@ -1,0 +1,158 @@
+{% extends 'base.html' %}
+{% block content %}
+    <div class="content">
+        <h2>仪表盘</h2>
+        {% for server in servers %}
+        <div style="margin-bottom: 30px; padding: 20px; border: 1px solid #ddd; border-radius: 5px;">
+            <h3>{{ server.name }} ({{ server.ip }})</h3>
+            <p>状态：{{ server.status }}</p>
+            <p>最后心跳：{{ server.last_heartbeat }}</p>
+            
+            {% if server.id in monitoring_data %}
+            <div style="margin-top: 20px;">
+                {% if 'cpu' in monitoring_data[server.id] %}
+                <h4>CPU使用率</h4>
+                <div style="width: 100%; height: 200px;">
+                    <canvas id="cpuChart{{ server.id }}"></canvas>
+                </div>
+                {% endif %}
+                
+                {% if 'disk' in monitoring_data[server.id] %}
+                <h4 style="margin-top: 20px;">磁盘使用率</h4>
+                <div style="width: 100%; height: 200px;">
+                    <canvas id="diskChart{{ server.id }}"></canvas>
+                </div>
+                {% endif %}
+                
+                {% if 'memory' in monitoring_data[server.id] %}
+                <h4 style="margin-top: 20px;">内存使用率</h4>
+                <div style="width: 100%; height: 200px;">
+                    <canvas id="memoryChart{{ server.id }}"></canvas>
+                </div>
+                {% endif %}
+            </div>
+            {% else %}
+            <p>暂无监控数据</p>
+            {% endif %}
+        </div>
+        {% endfor %}
+    </div>
+    
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        {% for server in servers %}
+        {% if server.id in monitoring_data %}
+        {% if 'cpu' in monitoring_data[server.id] %}
+        // CPU图表
+        const cpuCtx{{ server.id }} = document.getElementById('cpuChart{{ server.id }}').getContext('2d');
+        new Chart(cpuCtx{{ server.id }}, {
+            type: 'doughnut',
+            data: {
+                datasets: [{
+                    data: [{{ monitoring_data[server.id]['cpu']['cpu_percent'] }}, 100 - {{ monitoring_data[server.id]['cpu']['cpu_percent'] }}],
+                    backgroundColor: [
+                        {% if monitoring_data[server.id]['cpu']['cpu_percent'] > 80 %}
+                        '#ff6384'
+                        {% elif monitoring_data[server.id]['cpu']['cpu_percent'] > 50 %}
+                        '#ffce56'
+                        {% else %}
+                        '#4bc0c0'
+                        {% endif %},
+                        '#e0e0e0'
+                    ],
+                    borderWidth: 0
+                }]
+            },
+            options: {
+                responsive: true,
+                cutout: '70%',
+                plugins: {
+                    title: {
+                        display: true,
+                        text: 'CPU使用率: {{ monitoring_data[server.id]['cpu']['cpu_percent'] }}%'
+                    },
+                    legend: {
+                        display: false
+                    }
+                }
+            }
+        });
+        {% endif %}
+        
+        {% if 'disk' in monitoring_data[server.id] %}
+        // 磁盘图表
+        const diskCtx{{ server.id }} = document.getElementById('diskChart{{ server.id }}').getContext('2d');
+        new Chart(diskCtx{{ server.id }}, {
+            type: 'doughnut',
+            data: {
+                datasets: [{
+                    data: [{{ monitoring_data[server.id]['disk']['disk_usage']['percent'] }}, 100 - {{ monitoring_data[server.id]['disk']['disk_usage']['percent'] }}],
+                    backgroundColor: [
+                        {% if monitoring_data[server.id]['disk']['disk_usage']['percent'] > 80 %}
+                        '#ff6384'
+                        {% elif monitoring_data[server.id]['disk']['disk_usage']['percent'] > 50 %}
+                        '#ffce56'
+                        {% else %}
+                        '#4bc0c0'
+                        {% endif %},
+                        '#e0e0e0'
+                    ],
+                    borderWidth: 0
+                }]
+            },
+            options: {
+                responsive: true,
+                cutout: '70%',
+                plugins: {
+                    title: {
+                        display: true,
+                        text: '磁盘使用率: {{ monitoring_data[server.id]['disk']['disk_usage']['percent'] }}%'
+                    },
+                    legend: {
+                        display: false
+                    }
+                }
+            }
+        });
+        {% endif %}
+        
+        {% if 'memory' in monitoring_data[server.id] %}
+        // 内存图表
+        const memoryCtx{{ server.id }} = document.getElementById('memoryChart{{ server.id }}').getContext('2d');
+        new Chart(memoryCtx{{ server.id }}, {
+            type: 'doughnut',
+            data: {
+                datasets: [{
+                    data: [{{ monitoring_data[server.id]['memory']['memory']['percent'] }}, 100 - {{ monitoring_data[server.id]['memory']['memory']['percent'] }}],
+                    backgroundColor: [
+                        {% if monitoring_data[server.id]['memory']['memory']['percent'] > 80 %}
+                        '#ff6384'
+                        {% elif monitoring_data[server.id]['memory']['memory']['percent'] > 50 %}
+                        '#ffce56'
+                        {% else %}
+                        '#4bc0c0'
+                        {% endif %},
+                        '#e0e0e0'
+                    ],
+                    borderWidth: 0
+                }]
+            },
+            options: {
+                responsive: true,
+                cutout: '70%',
+                plugins: {
+                    title: {
+                        display: true,
+                        text: '内存使用率: {{ monitoring_data[server.id]['memory']['memory']['percent'] }}%'
+                    },
+                    legend: {
+                        display: false
+                    }
+                }
+            }
+        });
+        {% endif %}
+        {% endif %}
+        {% endfor %}
+    </script>
+{% endblock %}

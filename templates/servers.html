@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+{% block content %}
+    <div class="content">
+        <h2>服务器管理</h2>
+        <a href="/add_server" class="btn">添加服务器</a>
+        <table>
+            <tr>
+                <th>名称</th>
+                <th>IP地址</th>
+                <th>端口</th>
+                <th>用户名</th>
+                <th>状态</th>
+                <th>最后心跳</th>
+                <th>操作</th>
+            </tr>
+            {% for server in servers %}
+            <tr>
+                <td>{{ server.name }}</td>
+                <td>{{ server.ip }}</td>
+                <td>{{ server.port }}</td>
+                <td>{{ server.username }}</td>
+                <td>{{ server.status }}</td>
+                <td>{{ server.last_heartbeat }}</td>
+                <td>
+                    <a href="/edit_server/{{ server.id }}" class="btn">编辑</a>
+                    <a href="/delete_server/{{ server.id }}" class="btn btn-danger" onclick="return confirm('确定要删除这个服务器吗？');">删除</a>
+                </td>
+            </tr>
+            {% endfor %}
+        </table>
+    </div>
+{% endblock %}

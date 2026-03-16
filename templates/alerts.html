@@ -1,0 +1,37 @@
+{% extends 'base.html' %}
+{% block content %}
+    <div class="content">
+        <h2>告警管理</h2>
+        <table>
+            <tr>
+                <th>ID</th>
+                <th>服务器</th>
+                <th>类型</th>
+                <th>级别</th>
+                <th>消息</th>
+                <th>时间</th>
+                <th>状态</th>
+                <th>操作</th>
+            </tr>
+            {% for alert in alerts %}
+            <tr>
+                <td>{{ alert.id }}</td>
+                <td>{{ alert.server_id }}</td>
+                <td>{{ alert.type }}</td>
+                <td>{{ alert.level }}</td>
+                <td>{{ alert.message }}</td>
+                <td>{{ alert.timestamp }}</td>
+                <td>{{ alert.status }}</td>
+                <td>
+                    {% if alert.status == 'active' %}
+                    <a href="/resolve_alert/{{ alert.id }}" class="btn">解决</a>
+                    {% endif %}
+                </td>
+            </tr>
+            {% endfor %}
+        </table>
+        {% if alerts|length == 0 %}
+        <p>暂无告警</p>
+        {% endif %}
+    </div>
+{% endblock %}

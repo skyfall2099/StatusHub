@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+{% block content %}
+    <div class="content">
+        <h2>监控工具管理</h2>
+        <table>
+            <tr>
+                <th>脚本名称</th>
+                <th>操作</th>
+            </tr>
+            {% for agent in agents %}
+            <tr>
+                <td>{{ agent }}</td>
+                <td>
+                    <a href="#" class="btn">查看</a>
+                    <a href="#" class="btn btn-danger">删除</a>
+                </td>
+            </tr>
+            {% endfor %}
+        </table>
+    </div>
+{% endblock %}

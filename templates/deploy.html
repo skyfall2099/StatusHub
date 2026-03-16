@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+{% block content %}
+    <div class="content">
+        <h2>部署管理</h2>
+        <form method="POST" action="/deploy_agent">
+            <div>
+                <label for="server">目标服务器：</label>
+                <select id="server" name="server" required>
+                    {% for server in servers %}
+                    <option value="{{ server.id }}">{{ server.name }} ({{ server.ip }})</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div>
+                <label for="agent">监控脚本：</label>
+                <select id="agent" name="agent" required>
+                    {% for agent in agents %}
+                    <option value="{{ agent }}">{{ agent }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div>
+                <label for="schedule">执行频率：</label>
+                <input type="text" id="schedule" name="schedule" placeholder="如：*/5 * * * *" required>
+            </div>
+            <div>
+                <input type="submit" value="部署" class="btn">
+            </div>
+        </form>
+    </div>
+{% endblock %}
